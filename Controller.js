@@ -3,7 +3,7 @@ function Controller(application) {
     var self = this;
     self.a = application;
     
-    /* Return name text or mp3 file for current card like 005.txt */
+    /* Return name of txt or mp3 file for current card like 005.txt */
     self.get_fname = function(ext) {
         var s = "00" + self.card_id;
         var zfilled = s.substr(s.length - 3);
@@ -25,15 +25,17 @@ function Controller(application) {
 
         if (!app.FileExists(fname)){
 
-            // exit macro mode if we reached the end
+            // Exit macro mode if we reached the end
             if (self.mode == "Macro")
                 self.toggle_macro();
 
+            // If we can not go to the next card,
+            // restore the last known card id
             self.card_id -= 1;
             return;
         }
         
-        self.show_card(self.card_id);
+        self.show_card();
     };
 
     /* Show previous card */
@@ -43,10 +45,17 @@ function Controller(application) {
         if (self.card_id == 1) return; 
         
         self.card_id -= 1;
-        self.show_card(self.card_id);
+        self.show_card();
     };
 
 
+    /*
+        Playing sounds automatically while browsing can be
+        turned off by setting mute_on property to true.
+
+        But when user clicks on Play button, that means
+        he wants to listen to it, so it plays even with mute_on.
+    */
     self.play_sound = function(force) {
 
         if (self.mute_on && !force) return;
@@ -54,7 +63,16 @@ function Controller(application) {
         var fname = self.get_fname(".mp3");
         self.player.SetFile(fname);
 
+        // self.player.Play() is in self.player_ready() function
+        // that is called on OnReady event of the player 
+
     };
+
+    /* Called when player has loaded the file and is ready to play */
+    self.player_ready = function() {
+        self.play_started = new Date().getTime();
+        self.player.Play();
+    }
 
     /* 
         If user clicks on left side of text - show previous card
@@ -152,18 +170,11 @@ function Controller(application) {
         dlgOpen.Show();
         
     }
-    
-    /* Called when player has loaded the file and is ready to play */
-    self.player_ready = function() {
-        self.play_started = new Date().getTime();
-        self.player.Play();
-    }
-
 
     self.mode = "Browse";
     self.card_id = 1;
 
-    // read some properties from app config
+    // Read some properties from app config
     self.project = self.a.config["project"];
     self.mute_on = self.a.config["mute-on-start"];
     self.data_dir = self.a.config["data-dir"];
@@ -175,6 +186,7 @@ function Controller(application) {
 
     self.play_started = 0;
     
+    // Show the first card
     self.show_card();
 
 }
