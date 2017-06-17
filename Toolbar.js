@@ -16,11 +16,11 @@ function Toolbar(application) {
         var btn = app.CreateButton("[fa-" + icon + "]",
                         self.width, self.btn_height, 
                         "Custom,FontAwesome"); 
-        btn.SetStyle( TOOLBAR_BG, TOOLBAR_BG, 0,0,0,0 );
-        btn.SetTextSize( self.a.config["toolbar-font-size"] );
-        btn.SetTextColor( TOOLBAR_CLR );
-        btn.SetOnTouch( callback );
-        self.lay.AddChild( btn );
+        btn.SetStyle(TOOLBAR_BG, TOOLBAR_BG, 0,0,0,0);
+        btn.SetTextSize(self.a.config["toolbar-font-size"]);
+        btn.SetTextColor(TOOLBAR_CLR);
+        btn.SetOnTouch(callback);
+        self.lay.AddChild(btn);
         return btn;
     };
     

@@ -64,7 +64,7 @@ function Controller(application) {
         self.player.SetFile(fname);
 
         // self.player.Play() is in self.player_ready() function
-        // that is called on OnReady event of the player 
+        // that is called on OnReady event of the MediaPlayer 
 
     };
 
